@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <title>jquery插件</title>
+    <link rel="stylesheet" href="styles/jquery_plugin.css">
+    <style>
+        div {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .title {
+            margin: 0.2rem auto;
+            color: #0000cc;
+            font-size: 0.5rem;
+        }
+
+        .button {
+            border: 1px solid #000000;
+            border-radius: 8px;
+            width: 1.2rem;
+            height: 0.6rem;
+            background-color: #a6e22e;
+            font-size: 0.2rem;
+            text-align: center;
+            line-height: 0.6rem;
+            margin: 0.5rem 0.1rem;
+        }
+    </style>
+</head>
+<body>
+<p class="title">1.loading插件</p>
+<div style="display: flex;flex-direction: row;">
+    <div class="open button">打开</div>
+    <div class="close button">关闭</div>
+</div>
+<div class='loading'></div>
+<p class="title">2.转盘抽奖插件</p>
+<div class="pointer" style="width: 100px;height: 100px;background-color: #00A000;"></div>
+<p class="title">3.上滑刷新加载数据插件</p>
+<div class="container" style="width: 200px;height: 150px;font-size: 14px;overflow: scroll;background-color: #f0ad4e;">
+    <div class="content">
+        <p>第1行</p>
+        <p>第2行</p>
+        <p>第3行</p>
+        <p>第4行</p>
+        <p>第5行</p>
+        <p>第6行</p>
+        <p>第7行</p>
+        <p>第8行</p>
+    </div>
+    <div class="more-loading"></div>
+</div>
+
+</body>
+<script type="application/javascript" src="scripts/jquery-2.1.4.min.js"></script>
+<script type="application/javascript" src="scripts/jquery_plugin.js"></script>
+<script>
+    //页面自适应
+    var screenWidth = $('body').width();
+    var fontS = screenWidth / 750 * 100;
+    var html = document.getElementsByTagName('html')[0];
+    html.style.fontSize = fontS + 'px';
+</script>
+<script>
+    $(function () {
+
+        var isClick = 0;
+        var isClick2 = 0;
+
+        //打开loading 随意起class的名字
+        $('.open').on('click', function () {
+            if (isClick == 0) {
+                $('.loading').plugins({
+                    name: 'openLoading',
+                    options: {
+                        speed: 50
+                    }
+                });
+                isClick = 1;
+            } else {
+                alert('请勿重复点击');
+            }
+        });
+
+        //关闭loading 随意起class的名字
+        $('.close').on('click', function () {
+            $('.loading').plugins({
+                name: 'closeLoading'
+            });
+            isClick = 0;
+        });
+
+        //转盘抽奖的回调方法
+        var callback2 = function () {
+            alert('恭喜获奖');
+            isClick2 = 0;
+        };
+
+        //转盘抽奖
+        $('.pointer').on('click', function () {
+            if(isClick2 == 0){
+                $(this).plugins({
+                    name: 'luckDraw',
+                    options: {
+                        id: 1,//指针指向某一个商品
+                        deg: 60,//旋转角度 = 360°/转盘物品数量
+                        callback:callback2
+                    }
+                });
+                isClick2 = 1;
+            }else{
+                alert('请勿重复点击');
+            }
+        });
+
+        //上滑刷新的回调方法
+        var callback = function () {
+            var addHtml =
+                 '<p>新加入的行</p>' +
+                 '<p>********</p>';
+            return addHtml;
+        };
+
+        //滑动刷新 整个页面滑动,传window
+        $('.container').plugins({
+            name: 'slideRefresh',
+            options: {
+                callback: callback
+            }
+        });
+    })
+    ;
+</script>
+</html>
